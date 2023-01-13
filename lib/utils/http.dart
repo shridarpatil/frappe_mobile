@@ -1,9 +1,8 @@
 import '../app/locator.dart';
-import '../services/api/api.dart';
-
-import '../utils/dio_helper.dart';
-import '../model/offline_storage.dart';
 import '../model/config.dart';
+import '../model/offline_storage.dart';
+import '../services/api/api.dart';
+import '../utils/dio_helper.dart';
 
 initApiConfig() async {
   if (Config().baseUrl != null) {
@@ -53,9 +52,9 @@ Future<void> cacheAllUsers() async {
 }
 
 Future<void> setBaseUrl(url) async {
-  if (!url.startsWith('https://')) {
-    url = "https://$url";
-  }
+  // if (!url.startsWith('https://')) {
+  //   url = "https://$url";
+  // }
   await Config.set('baseUrl', url);
   await DioHelper.init(url);
 }
