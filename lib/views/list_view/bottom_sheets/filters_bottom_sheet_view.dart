@@ -6,7 +6,6 @@ import 'package:frappe_app/model/doctype_response.dart';
 import 'package:frappe_app/utils/enums.dart';
 import 'package:frappe_app/utils/frappe_icon.dart';
 import 'package:frappe_app/views/base_view.dart';
-
 import 'package:frappe_app/views/list_view/bottom_sheets/edit_filter_bottom_sheet_view.dart';
 import 'package:frappe_app/widgets/frappe_bottom_sheet.dart';
 import 'package:frappe_app/widgets/frappe_button.dart';
@@ -47,7 +46,7 @@ class FiltersBottomSheetView extends StatelessWidget {
         if (filters.isEmpty) {
           model.addFilter();
         } else {
-          model.filtersToApply = filters;
+          model.filtersToApply = [...filters];
         }
       },
       onModelClose: (model) {

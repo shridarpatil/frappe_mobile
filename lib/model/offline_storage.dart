@@ -1,16 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 
 import '../app/locator.dart';
-
 import '../model/desktop_page_response.dart';
 import '../model/doctype_response.dart';
-
-import '../services/storage_service.dart';
 import '../services/api/api.dart';
-
+import '../services/storage_service.dart';
 import '../utils/constants.dart';
 import '../utils/helpers.dart';
 import 'common.dart';
@@ -29,7 +27,9 @@ class OfflineStorage {
     }
 
     var k = Config().primaryCacheKey! + "#@#" + secondaryKey;
+    log("putItem k: $k");
     var kHash = generateKeyHash(k);
+    log("putItem kHash: $kHash");
 
     var v = {
       'timestamp': DateTime.now(),
@@ -71,7 +71,9 @@ class OfflineStorage {
       return {"data": null};
     }
     var k = Config().primaryCacheKey! + "#@#" + secondaryKey;
+    log("getItem k: $k");
     var keyHash = generateKeyHash(k);
+    log("getItem keyHash: $keyHash");
 
     if (storage.get(keyHash) == null) {
       return {"data": null};

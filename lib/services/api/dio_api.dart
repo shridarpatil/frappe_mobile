@@ -3,8 +3,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:frappe_app/model/common.dart';
 import 'package:frappe_app/model/get_doc_response.dart';
 import 'package:frappe_app/model/get_versions_response.dart';
@@ -13,16 +13,14 @@ import 'package:frappe_app/model/login_request.dart';
 import 'package:frappe_app/model/system_settings_response.dart';
 import 'package:frappe_app/model/upload_file_response.dart';
 
-import '../../model/doctype_response.dart';
-import '../../model/desktop_page_response.dart';
 import '../../model/desk_sidebar_items_response.dart';
+import '../../model/desktop_page_response.dart';
+import '../../model/doctype_response.dart';
 import '../../model/login_response.dart';
-
-import '../../services/api/api.dart';
-
-import '../../utils/helpers.dart';
-import '../../utils/dio_helper.dart';
 import '../../model/offline_storage.dart';
+import '../../services/api/api.dart';
+import '../../utils/dio_helper.dart';
+import '../../utils/helpers.dart';
 
 class DioApi implements Api {
   Future<LoginResponse> login(LoginRequest loginRequest) async {
@@ -83,7 +81,7 @@ class DioApi implements Api {
 
       if (response.statusCode == 417) {
         response = await DioHelper.dio.post(
-          '/method/frappe.desk.desktop.get_wspace_sidebar_items',
+          '/method/frappe.desk.desktop.get_workspace_sidebar_items',
           options: Options(
             validateStatus: (status) {
               return status < 500;

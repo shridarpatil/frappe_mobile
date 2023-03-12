@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frappe_app/model/desk_sidebar_items_response.dart';
-
 import 'package:frappe_app/utils/helpers.dart';
 import 'package:frappe_app/utils/navigation_helper.dart';
 import 'package:frappe_app/widgets/padded_card_list_tile.dart';
-
 import 'package:provider/provider.dart';
-
-import '../../model/desktop_page_response.dart';
 
 import '../../config/frappe_palette.dart';
 import '../../config/palette.dart';
-
+import '../../model/desktop_page_response.dart';
 import '../../utils/enums.dart';
-
 import '../../widgets/header_app_bar.dart';
 import '../base_view.dart';
 import 'desk_viewmodel.dart';
@@ -240,49 +235,50 @@ class DeskView extends StatelessWidget {
 
       desktopPage.message.cards.items.forEach(
         (item) {
-          widgets.add(
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10.0,
-              ),
-              child: Card(
-                color: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 0.5,
-                    color: FrappePalette.grey[400]!,
+          if (item.hidden != 1)
+            widgets.add(
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                ),
+                child: Card(
+                  color: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 0.5,
+                      color: FrappePalette.grey[400]!,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      6.0,
+                    ),
                   ),
-                  borderRadius: BorderRadius.circular(
-                    6.0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12.0,
+                    ),
+                    child: Column(
+                      children: [
+                        _subHeading(
+                          item.label,
+                        ),
+                        ...item.links.where((item) {
+                          return item.type != "DocType";
+                        }).map(
+                          (link) {
+                            return _item(
+                              item: link,
+                              model: model,
+                              context: context,
+                            );
+                          },
+                        ).toList()
+                      ],
+                    ),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12.0,
-                  ),
-                  child: Column(
-                    children: [
-                      _subHeading(
-                        item.label,
-                      ),
-                      ...item.links.where((item) {
-                        return item.type != "DocType";
-                      }).map(
-                        (link) {
-                          return _item(
-                            item: link,
-                            model: model,
-                            context: context,
-                          );
-                        },
-                      ).toList()
-                    ],
-                  ),
-                ),
               ),
-            ),
-          );
+            );
 
           widgets.add(
             SizedBox(

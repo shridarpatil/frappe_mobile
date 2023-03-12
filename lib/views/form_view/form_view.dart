@@ -1,39 +1,31 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:frappe_app/model/upload_file_response.dart';
-import 'package:frappe_app/utils/form_helper.dart';
-import 'package:frappe_app/utils/indicator.dart';
-import 'package:frappe_app/widgets/header_app_bar.dart';
-import 'package:provider/provider.dart';
-
 import 'package:frappe_app/config/frappe_icons.dart';
 import 'package:frappe_app/config/frappe_palette.dart';
 import 'package:frappe_app/model/common.dart';
 import 'package:frappe_app/model/get_doc_response.dart';
+import 'package:frappe_app/model/upload_file_response.dart';
+import 'package:frappe_app/utils/form_helper.dart';
 import 'package:frappe_app/utils/frappe_icon.dart';
-import 'package:frappe_app/views/base_view.dart';
+import 'package:frappe_app/utils/indicator.dart';
 import 'package:frappe_app/views/comment_input.dart';
-import 'package:frappe_app/views/form_view/form_view_viewmodel.dart';
-import 'package:frappe_app/widgets/collapsed_avatars.dart';
-import 'package:frappe_app/widgets/custom_expansion_tile.dart';
-import 'package:frappe_app/widgets/timeline.dart';
-
 import 'package:frappe_app/views/form_view/bottom_sheets/assignees/assignees_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/attachments/view_attachments_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/reviews/view_reviews_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/share/share_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/tags/tags_bottom_sheet_view.dart';
+import 'package:frappe_app/views/form_view/form_view_viewmodel.dart';
+import 'package:frappe_app/widgets/collapsed_avatars.dart';
 import 'package:frappe_app/widgets/collapsed_reviews.dart';
+import 'package:frappe_app/widgets/custom_expansion_tile.dart';
+import 'package:frappe_app/widgets/header_app_bar.dart';
+import 'package:frappe_app/widgets/timeline.dart';
 
 import '../../model/doctype_response.dart';
-import '../../config/palette.dart';
-
-import '../../utils/helpers.dart';
-import '../../utils/frappe_alert.dart';
 import '../../utils/enums.dart';
-
+import '../../utils/frappe_alert.dart';
+import '../../utils/helpers.dart';
 import '../../widgets/custom_form.dart';
 import '../../widgets/frappe_button.dart';
 import '../base_widget.dart';
