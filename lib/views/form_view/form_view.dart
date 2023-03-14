@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:frappe_app/config/frappe_icons.dart';
 import 'package:frappe_app/config/frappe_palette.dart';
@@ -27,7 +29,6 @@ import '../../utils/enums.dart';
 import '../../utils/frappe_alert.dart';
 import '../../utils/helpers.dart';
 import '../../widgets/custom_form.dart';
-import '../../widgets/frappe_button.dart';
 import '../base_widget.dart';
 import 'bottom_sheets/reviews/add_review_bottom_sheet_view.dart';
 
@@ -74,7 +75,7 @@ class FormView extends StatelessWidget {
                 }
 
                 var docs = model.formData.docs;
-                late String status;
+                String status = "";
 
                 if (docs[0]["status"] == null) {
                   var value = docs[0]["docstatus"];
@@ -86,14 +87,16 @@ class FormView extends StatelessWidget {
                     } else if (value == 2) {
                       value = "Cancelled";
                     }
+                    status = value;
                   } else {
                     status = value == 0 ? "Enabled" : "Disabled";
                   }
                 } else {
                   status = docs[0]["status"];
+                  log("docs[0]['status']: ${docs[0]["status"]}");
                 }
 
-                var builderContext;
+                BuildContext builderContext;
 
                 // var likedBy = docs[0]['_liked_by'] != null
                 //     ? json.decode(docs[0]['_liked_by'])
@@ -104,30 +107,6 @@ class FormView extends StatelessWidget {
                   backgroundColor: FrappePalette.grey[50],
                   appBar: buildAppBar(
                     title: '${model.meta.name} Details',
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 8,
-                        ),
-                        child: FrappeFlatButton(
-                          buttonType: ButtonType.primary,
-                          title: 'Save',
-                          onPressed: !model.isDirty
-                              ? () => {
-                                    FrappeAlert.warnAlert(
-                                      title: "No changes in document",
-                                      context: context,
-                                    )
-                                  }
-                              : () => _handleUpdate(
-                                    doc: docs[0],
-                                    model: model,
-                                    context: context,
-                                  ),
-                        ),
-                      )
-                    ],
                   ),
                   body: Builder(
                     builder: (context) {
@@ -164,16 +143,27 @@ class FormView extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            DocInfo(
-                              name: name,
-                              meta: model.meta,
-                              doc: docs[0],
-                              doctype: model.meta.name,
-                              docInfo: model.docinfo!,
-                              refreshCallback: () {
-                                model.getData();
-                              },
+                            ExpandablePanel(
+                              collapsed: Container(),
+                              header: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 10,
+                                ),
+                                child: Text('Actions'),
+                              ),
+                              expanded: DocInfo(
+                                name: name,
+                                meta: model.meta,
+                                doc: docs[0],
+                                doctype: model.meta.name,
+                                docInfo: model.docinfo!,
+                                refreshCallback: () {
+                                  model.getData();
+                                },
+                              ),
                             ),
+                            SizedBox(height: 15),
                             CustomForm(
                               onChanged: () {
                                 model.handleFormDataChange();
@@ -186,6 +176,18 @@ class FormView extends StatelessWidget {
                               ).toList(),
                               formHelper: formHelper,
                               doc: docs[0],
+                              onSave: !model.isDirty
+                                  ? () => {
+                                        FrappeAlert.warnAlert(
+                                          title: "No changes in document",
+                                          context: context,
+                                        )
+                                      }
+                                  : () => _handleUpdate(
+                                        doc: docs[0],
+                                        model: model,
+                                        context: context,
+                                      ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(

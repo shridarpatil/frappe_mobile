@@ -11,18 +11,23 @@ import 'package:frappe_app/utils/form_helper.dart';
 import 'package:frappe_app/utils/helpers.dart';
 import 'package:frappe_app/views/base_viewmodel.dart';
 import 'package:frappe_app/views/base_widget.dart';
+import 'package:frappe_app/widgets/frappe_button.dart';
+
+import '../../utils/enums.dart' as enums;
 
 class CustomForm extends StatelessWidget {
   final FormHelper formHelper;
   final List<DoctypeField> fields;
   final Map doc;
   final void Function()? onChanged;
+  final void Function()? onSave;
 
   const CustomForm({
     required this.formHelper,
     required this.fields,
     required this.doc,
     this.onChanged,
+    this.onSave,
   });
 
   @override
@@ -38,7 +43,6 @@ class CustomForm extends StatelessWidget {
         onChanged: () {
           formHelper.save();
           model.handleFormDataChange(formHelper.getFormValue());
-
           if (onChanged != null) {
             onChanged!();
           }
@@ -47,21 +51,36 @@ class CustomForm extends StatelessWidget {
         key: formHelper.getKey(),
         child: SingleChildScrollView(
           child: Column(
-            children: generateLayout(
-              fields: fields,
-              doc: model.doc,
-              onControlChanged: (
-                fieldValue,
-              ) {
-                model.handleFetchFrom(
-                  fieldValue: fieldValue,
-                  formHelper: formHelper,
-                  fields: fields,
-                );
+            children: [
+              ...generateLayout(
+                fields: fields,
+                doc: model.doc,
+                onControlChanged: (
+                  fieldValue,
+                ) {
+                  model.handleFetchFrom(
+                    fieldValue: fieldValue,
+                    formHelper: formHelper,
+                    fields: fields,
+                  );
 
-                model.handleDependsOn();
-              },
-            ),
+                  model.handleDependsOn();
+                },
+              ),
+              if (onSave != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12.0,
+                    horizontal: 15,
+                  ),
+                  child: FrappeFlatButton(
+                    buttonType: enums.ButtonType.primary,
+                    title: 'Save',
+                    fullWidth: true,
+                    onPressed: onSave,
+                  ),
+                ),
+            ],
           ),
         ),
       ),

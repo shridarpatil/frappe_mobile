@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frappe_app/model/desk_sidebar_items_response.dart';
 import 'package:frappe_app/utils/helpers.dart';
-import 'package:frappe_app/utils/navigation_helper.dart';
 import 'package:frappe_app/widgets/padded_card_list_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -62,19 +61,70 @@ class DeskView extends StatelessWidget {
             );
           } else {
             return Scaffold(
+              drawer: Drawer(
+                child: model.state == ViewState.busy
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Builder(
+                        builder: (context) {
+                          List<Widget> listItems = [];
+                          model.modulesByCategory.forEach(
+                            (category, modules) {
+                              listItems.add(ListTile(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                title: Text(
+                                  category.toUpperCase(),
+                                  style: TextStyle(
+                                    color: FrappePalette.grey[600],
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                visualDensity: VisualDensity(
+                                  vertical: -4,
+                                ),
+                              ));
+                              modules.forEach(
+                                (element) {
+                                  listItems.add(
+                                    ListTile(
+                                      visualDensity: VisualDensity(
+                                        vertical: -4,
+                                      ),
+                                      tileColor:
+                                          model.currentModule == element.name
+                                              ? Palette.bgColor
+                                              : Colors.white,
+                                      title: Text(
+                                        element.label,
+                                      ),
+                                      onTap: () {
+                                        model.switchModule(
+                                          element,
+                                        );
+
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+
+                          return ListView(
+                            children: listItems,
+                          );
+                        },
+                      ),
+              ),
               backgroundColor: Palette.bgColor,
               appBar: buildAppBar(
                 context: context,
                 title: model.currentModuleTitle,
-                onPressed: () {
-                  NavigationHelper.push(
-                    context: context,
-                    page: ShowModules(
-                      model: model,
-                      title: model.currentModuleTitle,
-                    ),
-                  );
-                },
               ),
               body: RefreshIndicator(
                 onRefresh: () async {
@@ -290,89 +340,5 @@ class DeskView extends StatelessWidget {
     }
 
     return widgets;
-  }
-}
-
-class ShowModules extends StatelessWidget {
-  final DeskViewModel model;
-  final String title;
-
-  ShowModules({
-    required this.model,
-    required this.title,
-  });
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: buildAppBar(
-        title: title,
-        expanded: true,
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-      body: model.state == ViewState.busy
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Builder(
-              builder: (context) {
-                List<Widget> listItems = [];
-                model.modulesByCategory.forEach(
-                  (category, modules) {
-                    listItems.add(ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      title: Text(
-                        category.toUpperCase(),
-                        style: TextStyle(
-                          color: FrappePalette.grey[600],
-                          fontWeight: FontWeight.w600,
-                          fontSize: 11,
-                        ),
-                      ),
-                      visualDensity: VisualDensity(
-                        vertical: -4,
-                      ),
-                    ));
-                    modules.forEach(
-                      (element) {
-                        listItems.add(
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: ListTile(
-                              visualDensity: VisualDensity(
-                                vertical: -4,
-                              ),
-                              tileColor: model.currentModule == element.name
-                                  ? Palette.bgColor
-                                  : Colors.white,
-                              title: Text(
-                                element.label,
-                              ),
-                              onTap: () {
-                                model.switchModule(
-                                  element,
-                                );
-
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
-
-                return ListView(
-                  children: listItems,
-                );
-              },
-            ),
-    );
   }
 }
