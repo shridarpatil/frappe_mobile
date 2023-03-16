@@ -51,6 +51,7 @@ class _NewDocState extends State<NewDoc> {
             body: CustomForm(
               doc: model.newDoc,
               formHelper: formHelper,
+              meta: widget.meta.docs[0],
               fields: model.newDocFields,
               onSave: () async {
                 if (formHelper.saveAndValidate()) {

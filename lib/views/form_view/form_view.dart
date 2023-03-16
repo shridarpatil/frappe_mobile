@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:expandable/expandable.dart';
@@ -93,7 +92,6 @@ class FormView extends StatelessWidget {
                   }
                 } else {
                   status = docs[0]["status"];
-                  log("docs[0]['status']: ${docs[0]["status"]}");
                 }
 
                 BuildContext builderContext;
@@ -165,6 +163,8 @@ class FormView extends StatelessWidget {
                             ),
                             SizedBox(height: 15),
                             CustomForm(
+                              meta: model.meta,
+                              isDirty: model.isDirty,
                               onChanged: () {
                                 model.handleFormDataChange();
                               },
@@ -176,7 +176,11 @@ class FormView extends StatelessWidget {
                               ).toList(),
                               formHelper: formHelper,
                               doc: docs[0],
-                              onSave: !model.isDirty
+                              // TODO: Check here what happens if isSubmittable is 0[false]
+                              // TODO: Didn't handle that (Maybe handeled a bit)
+                              onSave: !model.isDirty &&
+                                      (docs[0]["docstatus"] == 0 &&
+                                          !isSubmittable(model.meta))
                                   ? () => {
                                         FrappeAlert.warnAlert(
                                           title: "No changes in document",
@@ -265,9 +269,6 @@ class FormView extends StatelessWidget {
         await model.handleUpdate(
           formValue: formValue,
           doc: doc,
-        );
-        FrappeAlert.infoAlert(
-          title: 'Changes Saved',
           context: context,
         );
       } catch (e) {

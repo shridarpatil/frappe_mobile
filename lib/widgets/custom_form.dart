@@ -19,6 +19,8 @@ class CustomForm extends StatelessWidget {
   final FormHelper formHelper;
   final List<DoctypeField> fields;
   final Map doc;
+  final bool isDirty;
+  final DoctypeDoc meta;
   final void Function()? onChanged;
   final void Function()? onSave;
 
@@ -28,6 +30,8 @@ class CustomForm extends StatelessWidget {
     required this.doc,
     this.onChanged,
     this.onSave,
+    this.isDirty = false,
+    required this.meta,
   });
 
   @override
@@ -40,6 +44,7 @@ class CustomForm extends StatelessWidget {
       },
       model: CustomFormViewModel(),
       builder: (context, model, child) => FormBuilder(
+        enabled: !(doc.containsKey("docstatus") && doc["docstatus"] != 0),
         onChanged: () {
           formHelper.save();
           model.handleFormDataChange(formHelper.getFormValue());
@@ -67,7 +72,8 @@ class CustomForm extends StatelessWidget {
                   model.handleDependsOn();
                 },
               ),
-              if (onSave != null)
+              // If onSave is not null and docstatus is not 2("Cancelled"), then show save button
+              if (onSave != null && doc["docstatus"] != 2)
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 12.0,
@@ -75,7 +81,17 @@ class CustomForm extends StatelessWidget {
                   ),
                   child: FrappeFlatButton(
                     buttonType: enums.ButtonType.primary,
-                    title: 'Save',
+                    // If changes in doc then or [isSubmittable = 0] show save button
+                    // else if docstatus is 0("Draft") and no change in doc then show submit button
+                    // else if docstatus is 1("Submitted") then show cancel button
+                    // else if docstatus is 2("Cancelled") then show nothing
+                    title: doc["docstatus"] == 1 && isSubmittable(meta)
+                        ? 'Cancel'
+                        : doc["docstatus"] == 0 &&
+                                !isDirty &&
+                                isSubmittable(meta)
+                            ? 'Submit'
+                            : 'Save',
                     fullWidth: true,
                     onPressed: onSave,
                   ),

@@ -6,10 +6,11 @@ import 'package:frappe_app/model/group_by_count_response.dart';
 import 'package:frappe_app/model/login_request.dart';
 import 'package:frappe_app/model/system_settings_response.dart';
 import 'package:frappe_app/model/upload_file_response.dart';
+import 'package:frappe_app/utils/enums.dart';
 
-import '../../model/doctype_response.dart';
-import '../../model/desktop_page_response.dart';
 import '../../model/desk_sidebar_items_response.dart';
+import '../../model/desktop_page_response.dart';
+import '../../model/doctype_response.dart';
 import '../../model/login_response.dart';
 
 abstract class Api {
@@ -84,7 +85,13 @@ abstract class Api {
     @required List<FrappeFile> files,
   });
 
-  Future saveDocs(String doctype, Map formValue);
+  Future saveDocs(
+    String doctype,
+    Map formValue, {
+    SaveDocAction action = SaveDocAction.save,
+  });
+
+  Future cancelDoc(String doctype, String name);
 
   Future<Map> searchLink({
     String doctype,
