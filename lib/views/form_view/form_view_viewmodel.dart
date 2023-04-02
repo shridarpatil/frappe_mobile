@@ -1,20 +1,19 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:frappe_app/model/common.dart';
 import 'package:frappe_app/model/get_doc_response.dart';
+import 'package:frappe_app/utils/frappe_alert.dart';
+import 'package:frappe_app/utils/helpers.dart';
 import 'package:frappe_app/utils/loading_indicator.dart';
-import 'package:injectable/injectable.dart';
 
 import '../../app/locator.dart';
-import '../../model/doctype_response.dart';
-import '../../views/base_viewmodel.dart';
-import '../../services/api/api.dart';
-
-import '../../model/offline_storage.dart';
 import '../../model/config.dart';
+import '../../model/doctype_response.dart';
+import '../../model/offline_storage.dart';
+import '../../services/api/api.dart';
 import '../../utils/enums.dart';
-import '../../utils/helpers.dart';
-import '../../model/queue.dart';
+import '../../views/base_viewmodel.dart';
 
 class FormViewViewModel extends BaseViewModel {
   late String name;
@@ -106,8 +105,19 @@ class FormViewViewModel extends BaseViewModel {
   Future handleUpdate({
     required Map formValue,
     required Map doc,
+    required BuildContext context,
   }) async {
-    LoadingIndicator.loadingWithBackgroundDisabled("Saving");
+    // If docstatus is 0[Draft] and is_submittable, then doc is submittable
+    final bool canBeSubmitted =
+        doc["docstatus"] == 0 && !isDirty && isSubmittable(meta);
+
+    // If docstatus is 1[Submitted] and is_submittable, then doc is cancellable
+    final bool canBeCancelled = (doc["docstatus"] == 1 && isSubmittable(meta));
+    LoadingIndicator.loadingWithBackgroundDisabled(canBeCancelled
+        ? "Cancelling"
+        : canBeSubmitted
+            ? "Submitting"
+            : "Saving");
     // var isOnline = await verifyOnline();
     var isOnline = true;
     if (!isOnline) {
@@ -162,10 +172,19 @@ class FormViewViewModel extends BaseViewModel {
       };
 
       try {
-        var response = await locator<Api>().saveDocs(
-          meta.name,
-          formValue,
-        );
+        var response;
+        canBeCancelled
+            ? response = await locator<Api>().cancelDoc(
+                meta.name,
+                doc['name'],
+              )
+            : response = await locator<Api>().saveDocs(
+                meta.name,
+                formValue,
+                // If doctype is editable[Draft], not dirty and can be submitted then submit else save
+                action:
+                    canBeSubmitted ? SaveDocAction.submit : SaveDocAction.save,
+              );
 
         if (response.statusCode == HttpStatus.ok) {
           docinfo = Docinfo.fromJson(
@@ -181,6 +200,15 @@ class FormViewViewModel extends BaseViewModel {
           LoadingIndicator.stopLoading();
 
           refresh();
+
+          FrappeAlert.infoAlert(
+            title: canBeCancelled
+                ? "Cancelled"
+                : canBeSubmitted
+                    ? 'Changes Submitted'
+                    : 'Changes Saved',
+            context: context,
+          );
         }
       } catch (e) {
         LoadingIndicator.stopLoading();

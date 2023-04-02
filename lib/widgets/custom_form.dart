@@ -11,18 +11,27 @@ import 'package:frappe_app/utils/form_helper.dart';
 import 'package:frappe_app/utils/helpers.dart';
 import 'package:frappe_app/views/base_viewmodel.dart';
 import 'package:frappe_app/views/base_widget.dart';
+import 'package:frappe_app/widgets/frappe_button.dart';
+
+import '../../utils/enums.dart' as enums;
 
 class CustomForm extends StatelessWidget {
   final FormHelper formHelper;
   final List<DoctypeField> fields;
   final Map doc;
+  final bool isDirty;
+  final DoctypeDoc meta;
   final void Function()? onChanged;
+  final void Function()? onSave;
 
   const CustomForm({
     required this.formHelper,
     required this.fields,
     required this.doc,
     this.onChanged,
+    this.onSave,
+    this.isDirty = false,
+    required this.meta,
   });
 
   @override
@@ -35,10 +44,10 @@ class CustomForm extends StatelessWidget {
       },
       model: CustomFormViewModel(),
       builder: (context, model, child) => FormBuilder(
+        enabled: !(doc.containsKey("docstatus") && doc["docstatus"] != 0),
         onChanged: () {
           formHelper.save();
           model.handleFormDataChange(formHelper.getFormValue());
-
           if (onChanged != null) {
             onChanged!();
           }
@@ -47,21 +56,47 @@ class CustomForm extends StatelessWidget {
         key: formHelper.getKey(),
         child: SingleChildScrollView(
           child: Column(
-            children: generateLayout(
-              fields: fields,
-              doc: model.doc,
-              onControlChanged: (
-                fieldValue,
-              ) {
-                model.handleFetchFrom(
-                  fieldValue: fieldValue,
-                  formHelper: formHelper,
-                  fields: fields,
-                );
+            children: [
+              ...generateLayout(
+                fields: fields,
+                doc: model.doc,
+                onControlChanged: (
+                  fieldValue,
+                ) {
+                  model.handleFetchFrom(
+                    fieldValue: fieldValue,
+                    formHelper: formHelper,
+                    fields: fields,
+                  );
 
-                model.handleDependsOn();
-              },
-            ),
+                  model.handleDependsOn();
+                },
+              ),
+              // If onSave is not null and docstatus is not 2("Cancelled"), then show save button
+              if (onSave != null && doc["docstatus"] != 2)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12.0,
+                    horizontal: 15,
+                  ),
+                  child: FrappeFlatButton(
+                    buttonType: enums.ButtonType.primary,
+                    // If changes in doc then or [isSubmittable = 0] show save button
+                    // else if docstatus is 0("Draft") and no change in doc then show submit button
+                    // else if docstatus is 1("Submitted") then show cancel button
+                    // else if docstatus is 2("Cancelled") then show nothing
+                    title: doc["docstatus"] == 1 && isSubmittable(meta)
+                        ? 'Cancel'
+                        : doc["docstatus"] == 0 &&
+                                !isDirty &&
+                                isSubmittable(meta)
+                            ? 'Submit'
+                            : 'Save',
+                    fullWidth: true,
+                    onPressed: onSave,
+                  ),
+                ),
+            ],
           ),
         ),
       ),

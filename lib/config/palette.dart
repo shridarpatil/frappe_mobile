@@ -44,6 +44,7 @@ class Palette {
   // TODO
   static InputDecoration formFieldDecoration({
     String? label,
+    String? hintText,
     Widget? suffixIcon,
     Widget? prefixIcon,
     bool filled = true,
@@ -51,6 +52,7 @@ class Palette {
     Color? fillColor,
   }) {
     return InputDecoration(
+      hintText: hintText,
       suffixIcon: suffixIcon,
       prefixIcon: prefixIcon,
       isDense: true,

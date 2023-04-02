@@ -1,38 +1,31 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:frappe_app/app/locator.dart';
 import 'package:frappe_app/config/frappe_palette.dart';
-
 import 'package:frappe_app/config/palette.dart';
+import 'package:frappe_app/form/controls/attachment_button.dart';
 import 'package:frappe_app/form/controls/currency.dart';
 import 'package:frappe_app/form/controls/dynamic_link.dart';
 import 'package:frappe_app/form/controls/read_only.dart';
 import 'package:frappe_app/form/controls/text.dart';
 import 'package:frappe_app/model/common.dart';
-import 'package:frappe_app/model/config.dart';
 import 'package:frappe_app/model/doctype_response.dart';
-import 'package:frappe_app/services/api/api.dart';
-import 'package:frappe_app/utils/helpers.dart';
 import 'package:frappe_app/widgets/custom_expansion_tile.dart';
 import 'package:frappe_app/widgets/section.dart';
 
-import '../../config/palette.dart';
-
-import './custom_table.dart';
+import './autocomplete.dart';
 import './check.dart';
+import './custom_table.dart';
 import './data.dart';
 import './date.dart';
 import './datetime.dart';
 import './float.dart';
 import './int.dart';
+import './link_field.dart';
+import './multi_select.dart';
 import './select.dart';
 import './small_text.dart';
 import './text_editor.dart';
 import './time.dart';
-import './autocomplete.dart';
-import './link_field.dart';
-import './multi_select.dart';
+import '../../config/palette.dart';
 
 Widget makeControl({
   required DoctypeField field,
@@ -216,6 +209,15 @@ Widget makeControl({
     case "Date":
       {
         control = Date(
+          doctypeField: field,
+          doc: doc,
+        );
+      }
+      break;
+
+    case "Attach":
+      {
+        control = AttachmentButton(
           doctypeField: field,
           doc: doc,
         );

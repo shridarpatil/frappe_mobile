@@ -285,6 +285,7 @@ class _TableElementState extends State<TableElement> {
         fields: widget.meta.fields,
         formHelper: formHelper,
         doc: widget.doc,
+        meta: widget.meta,
       ),
     );
   }

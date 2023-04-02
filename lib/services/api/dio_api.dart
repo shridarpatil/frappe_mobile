@@ -3,8 +3,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:frappe_app/model/common.dart';
 import 'package:frappe_app/model/get_doc_response.dart';
 import 'package:frappe_app/model/get_versions_response.dart';
@@ -12,17 +12,17 @@ import 'package:frappe_app/model/group_by_count_response.dart';
 import 'package:frappe_app/model/login_request.dart';
 import 'package:frappe_app/model/system_settings_response.dart';
 import 'package:frappe_app/model/upload_file_response.dart';
+import 'package:frappe_app/utils/enum_extensions.dart';
+import 'package:frappe_app/utils/enums.dart';
 
-import '../../model/doctype_response.dart';
-import '../../model/desktop_page_response.dart';
 import '../../model/desk_sidebar_items_response.dart';
+import '../../model/desktop_page_response.dart';
+import '../../model/doctype_response.dart';
 import '../../model/login_response.dart';
-
-import '../../services/api/api.dart';
-
-import '../../utils/helpers.dart';
-import '../../utils/dio_helper.dart';
 import '../../model/offline_storage.dart';
+import '../../services/api/api.dart';
+import '../../utils/dio_helper.dart';
+import '../../utils/helpers.dart';
 
 class DioApi implements Api {
   Future<LoginResponse> login(LoginRequest loginRequest) async {
@@ -83,7 +83,7 @@ class DioApi implements Api {
 
       if (response.statusCode == 417) {
         response = await DioHelper.dio.post(
-          '/method/frappe.desk.desktop.get_wspace_sidebar_items',
+          '/method/frappe.desk.desktop.get_workspace_sidebar_items',
           options: Options(
             validateStatus: (status) {
               return status < 500;
@@ -612,7 +612,11 @@ class DioApi implements Api {
     return uploadedFiles;
   }
 
-  Future saveDocs(String doctype, Map formValue) async {
+  Future saveDocs(
+    String doctype,
+    Map formValue, {
+    SaveDocAction action = SaveDocAction.save,
+  }) async {
     var data = {
       "doctype": doctype,
       ...formValue,
@@ -621,7 +625,56 @@ class DioApi implements Api {
     try {
       final response = await DioHelper.dio.post(
         '/method/frappe.desk.form.save.savedocs',
-        data: "doc=${Uri.encodeComponent(json.encode(data))}&action=Save",
+        data:
+            "doc=${Uri.encodeComponent(json.encode(data))}&action=${action.toMap()}",
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw ErrorResponse();
+      }
+    } catch (e) {
+      if (e is DioError) {
+        if (e.response != null &&
+            e.response.data != null &&
+            e.response.data["_server_messages"] != null) {
+          var errorMsg = getServerMessage(e.response.data["_server_messages"]);
+
+          throw ErrorResponse(
+            statusCode: e.response.statusCode,
+            statusMessage: errorMsg,
+          );
+        } else {
+          if (e.error is SocketException) {
+            throw ErrorResponse(
+              statusCode: HttpStatus.serviceUnavailable,
+              statusMessage: e.error.message,
+            );
+          } else {
+            throw ErrorResponse(
+              statusCode: e.error.statusCode,
+              statusMessage: e.error.statusMessage,
+            );
+          }
+        }
+      } else {
+        throw ErrorResponse();
+      }
+    }
+  }
+
+  @override
+  Future cancelDoc(String doctype, String name) async {
+    try {
+      final response = await DioHelper.dio.post(
+        '/method/frappe.desk.form.save.cancel',
+        data: {
+          "doctype": doctype,
+          "name": name,
+        },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
         ),

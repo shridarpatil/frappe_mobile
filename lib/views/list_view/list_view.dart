@@ -10,21 +10,15 @@ import 'package:frappe_app/views/list_view/bottom_sheets/filters_bottom_sheet_vi
 import 'package:frappe_app/views/new_doc/new_doc_view.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../../model/doctype_response.dart';
-
-import '../../app/locator.dart';
-
-import '../../views/list_view/list_view_viewmodel.dart';
-
-import '../../config/palette.dart';
 import '../../config/frappe_icons.dart';
-
-import '../../utils/helpers.dart';
-import '../../utils/frappe_icon.dart';
+import '../../config/palette.dart';
+import '../../model/doctype_response.dart';
 import '../../utils/enums.dart';
-
-import '../../widgets/header_app_bar.dart';
+import '../../utils/frappe_icon.dart';
+import '../../utils/helpers.dart';
+import '../../views/list_view/list_view_viewmodel.dart';
 import '../../widgets/frappe_button.dart';
+import '../../widgets/header_app_bar.dart';
 import '../../widgets/list_item.dart';
 import 'bottom_sheets/sort_by_fields_bottom_sheet_view.dart';
 
@@ -286,7 +280,6 @@ class CustomListView extends StatelessWidget {
 
     var seenBy = data["_seen"] != null ? json.decode(data["_seen"]) : [];
     var isSeenByUser = seenBy.contains(model.userId);
-
     return ListItem(
       doctype: model.meta.docs[0].name,
       likeCount: likedBy.length,

@@ -3,17 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:frappe_app/services/http_inspector.dart';
 import 'package:frappe_app/views/home_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'lifecycle_manager.dart';
-
 import 'model/config.dart';
-import 'utils/enums.dart';
-
 import 'services/connectivity_service.dart';
-
+import 'utils/enums.dart';
 import 'views/login/login_view.dart';
 
 class FrappeApp extends StatefulWidget {
@@ -64,6 +62,7 @@ class _FrappeAppState extends State<FrappeApp> {
             debugShowCheckedModeBanner: false,
             title: 'Frappe',
             theme: theme,
+            navigatorKey: HttpInspector().alice.getNavigatorKey(),
             localizationsDelegates: [
               FormBuilderLocalizations.delegate,
             ],

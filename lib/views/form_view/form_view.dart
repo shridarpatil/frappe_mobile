@@ -1,41 +1,33 @@
 import 'dart:io';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:frappe_app/model/upload_file_response.dart';
-import 'package:frappe_app/utils/form_helper.dart';
-import 'package:frappe_app/utils/indicator.dart';
-import 'package:frappe_app/widgets/header_app_bar.dart';
-import 'package:provider/provider.dart';
-
 import 'package:frappe_app/config/frappe_icons.dart';
 import 'package:frappe_app/config/frappe_palette.dart';
 import 'package:frappe_app/model/common.dart';
 import 'package:frappe_app/model/get_doc_response.dart';
+import 'package:frappe_app/model/upload_file_response.dart';
+import 'package:frappe_app/utils/form_helper.dart';
 import 'package:frappe_app/utils/frappe_icon.dart';
-import 'package:frappe_app/views/base_view.dart';
+import 'package:frappe_app/utils/indicator.dart';
 import 'package:frappe_app/views/comment_input.dart';
-import 'package:frappe_app/views/form_view/form_view_viewmodel.dart';
-import 'package:frappe_app/widgets/collapsed_avatars.dart';
-import 'package:frappe_app/widgets/custom_expansion_tile.dart';
-import 'package:frappe_app/widgets/timeline.dart';
-
 import 'package:frappe_app/views/form_view/bottom_sheets/assignees/assignees_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/attachments/view_attachments_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/reviews/view_reviews_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/share/share_bottom_sheet_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/tags/tags_bottom_sheet_view.dart';
+import 'package:frappe_app/views/form_view/form_view_viewmodel.dart';
+import 'package:frappe_app/widgets/collapsed_avatars.dart';
 import 'package:frappe_app/widgets/collapsed_reviews.dart';
+import 'package:frappe_app/widgets/custom_expansion_tile.dart';
+import 'package:frappe_app/widgets/header_app_bar.dart';
+import 'package:frappe_app/widgets/timeline.dart';
 
 import '../../model/doctype_response.dart';
-import '../../config/palette.dart';
-
-import '../../utils/helpers.dart';
-import '../../utils/frappe_alert.dart';
 import '../../utils/enums.dart';
-
+import '../../utils/frappe_alert.dart';
+import '../../utils/helpers.dart';
 import '../../widgets/custom_form.dart';
-import '../../widgets/frappe_button.dart';
 import '../base_widget.dart';
 import 'bottom_sheets/reviews/add_review_bottom_sheet_view.dart';
 
@@ -82,7 +74,7 @@ class FormView extends StatelessWidget {
                 }
 
                 var docs = model.formData.docs;
-                late String status;
+                String status = "";
 
                 if (docs[0]["status"] == null) {
                   var value = docs[0]["docstatus"];
@@ -94,6 +86,7 @@ class FormView extends StatelessWidget {
                     } else if (value == 2) {
                       value = "Cancelled";
                     }
+                    status = value;
                   } else {
                     status = value == 0 ? "Enabled" : "Disabled";
                   }
@@ -101,7 +94,7 @@ class FormView extends StatelessWidget {
                   status = docs[0]["status"];
                 }
 
-                var builderContext;
+                BuildContext builderContext;
 
                 // var likedBy = docs[0]['_liked_by'] != null
                 //     ? json.decode(docs[0]['_liked_by'])
@@ -112,30 +105,6 @@ class FormView extends StatelessWidget {
                   backgroundColor: FrappePalette.grey[50],
                   appBar: buildAppBar(
                     title: '${model.meta.name} Details',
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 8,
-                        ),
-                        child: FrappeFlatButton(
-                          buttonType: ButtonType.primary,
-                          title: 'Save',
-                          onPressed: !model.isDirty
-                              ? () => {
-                                    FrappeAlert.warnAlert(
-                                      title: "No changes in document",
-                                      context: context,
-                                    )
-                                  }
-                              : () => _handleUpdate(
-                                    doc: docs[0],
-                                    model: model,
-                                    context: context,
-                                  ),
-                        ),
-                      )
-                    ],
                   ),
                   body: Builder(
                     builder: (context) {
@@ -172,17 +141,30 @@ class FormView extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            DocInfo(
-                              name: name,
-                              meta: model.meta,
-                              doc: docs[0],
-                              doctype: model.meta.name,
-                              docInfo: model.docinfo!,
-                              refreshCallback: () {
-                                model.getData();
-                              },
+                            ExpandablePanel(
+                              collapsed: Container(),
+                              header: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 10,
+                                ),
+                                child: Text('Actions'),
+                              ),
+                              expanded: DocInfo(
+                                name: name,
+                                meta: model.meta,
+                                doc: docs[0],
+                                doctype: model.meta.name,
+                                docInfo: model.docinfo!,
+                                refreshCallback: () {
+                                  model.getData();
+                                },
+                              ),
                             ),
+                            SizedBox(height: 15),
                             CustomForm(
+                              meta: model.meta,
+                              isDirty: model.isDirty,
                               onChanged: () {
                                 model.handleFormDataChange();
                               },
@@ -194,6 +176,22 @@ class FormView extends StatelessWidget {
                               ).toList(),
                               formHelper: formHelper,
                               doc: docs[0],
+                              // TODO: Check here what happens if isSubmittable is 0[false]
+                              // TODO: Didn't handle that (Maybe handeled a bit)
+                              onSave: !model.isDirty &&
+                                      (docs[0]["docstatus"] == 0 &&
+                                          !isSubmittable(model.meta))
+                                  ? () => {
+                                        FrappeAlert.warnAlert(
+                                          title: "No changes in document",
+                                          context: context,
+                                        )
+                                      }
+                                  : () => _handleUpdate(
+                                        doc: docs[0],
+                                        model: model,
+                                        context: context,
+                                      ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
@@ -271,9 +269,6 @@ class FormView extends StatelessWidget {
         await model.handleUpdate(
           formValue: formValue,
           doc: doc,
-        );
-        FrappeAlert.infoAlert(
-          title: 'Changes Saved',
           context: context,
         );
       } catch (e) {

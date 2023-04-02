@@ -9,33 +9,31 @@ import 'package:frappe_app/model/common.dart';
 import 'package:frappe_app/model/get_doc_response.dart';
 import 'package:frappe_app/utils/constants.dart';
 import 'package:frappe_app/utils/enums.dart';
-
 import 'package:frappe_app/utils/frappe_icon.dart';
 import 'package:frappe_app/utils/helpers.dart';
 import 'package:frappe_app/views/base_view.dart';
 import 'package:frappe_app/views/form_view/bottom_sheets/attachments/view_attachments_bottom_sheet_viewmodel.dart';
-
 import 'package:frappe_app/widgets/frappe_bottom_sheet.dart';
 import 'package:frappe_app/widgets/frappe_button.dart';
 import 'package:open_file/open_file.dart';
-
-import 'add_attachments_bottom_sheet_view.dart';
 
 class ViewAttachmentsBottomSheetView extends StatelessWidget {
   final List<Attachments> attachments;
   final String doctype;
   final String name;
+  final bool allowMultiple;
 
   const ViewAttachmentsBottomSheetView({
     required this.attachments,
     required this.doctype,
     required this.name,
+    this.allowMultiple = true,
   });
 
   _triggerFilePicker(Function addFiles) async {
     FilePickerResult? _files = await FilePicker.platform.pickFiles(
       type: FileType.any,
-      allowMultiple: true,
+      allowMultiple: allowMultiple,
     );
 
     if (_files != null) {
