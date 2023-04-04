@@ -23,10 +23,10 @@ class DioHelper {
     )..interceptors.addAll([
         CookieManager(cookieJar),
         LoggingInterceptor(),
-        HttpInspector().alice.getDioInterceptor(),
+        // HttpInspector().alice.getDioInterceptor(),
       ]);
-    dio?.options.connectTimeout = 60 * 1000;
-    dio?.options.receiveTimeout = 60 * 1000;
+    // dio?.options.connectTimeout = 60 * 1000;
+    // dio?.options.receiveTimeout = 60 * 1000;
   }
 
   static Future initCookies() async {

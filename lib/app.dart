@@ -62,7 +62,7 @@ class _FrappeAppState extends State<FrappeApp> {
             debugShowCheckedModeBanner: false,
             title: 'Frappe',
             theme: theme,
-            navigatorKey: HttpInspector().alice.getNavigatorKey(),
+            // navigatorKey: HttpInspector().alice.getNavigatorKey(),
             localizationsDelegates: [
               FormBuilderLocalizations.delegate,
             ],

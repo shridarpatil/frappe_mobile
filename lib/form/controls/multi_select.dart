@@ -51,7 +51,7 @@ class _MultiSelectState extends State<MultiSelect> with Control, ControlInput {
     var f = setMandatory(widget.doctypeField);
 
     if (f != null) {
-      validators.add(f(context));
+      validators.add(f());
     }
 
     var initialValue;

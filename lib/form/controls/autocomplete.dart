@@ -67,7 +67,7 @@ class _AutoCompleteState extends State<AutoComplete>
 
     if (f != null) {
       validators.add(
-        f(context),
+        f(),
       );
     }
 

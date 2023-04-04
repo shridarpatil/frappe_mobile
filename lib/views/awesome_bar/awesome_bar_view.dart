@@ -3,6 +3,7 @@ import 'package:frappe_app/config/frappe_palette.dart';
 import 'package:frappe_app/utils/helpers.dart';
 import 'package:frappe_app/views/awesome_bar/awesome_bar_viewmodel.dart';
 import 'package:frappe_app/widgets/card_list_tile.dart';
+import 'package:frappe_app/widgets/generics/flat_button_wrapper.dart';
 
 import '../../utils/frappe_icon.dart';
 
@@ -148,7 +149,7 @@ class Awesombar extends StatelessWidget {
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 8),
-                    child: FlatButton(
+                    child: FlatButtonWrapper(
                       child: Text(
                         'Cancel',
                         style: TextStyle(
@@ -156,8 +157,8 @@ class Awesombar extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      padding: EdgeInsets.zero,
-                      minWidth: 70,
+                      // padding: EdgeInsets.zero,
+                      // minWidth: 70,
                       onPressed: () {
                         FocusScope.of(context).requestFocus(FocusNode());
                       },

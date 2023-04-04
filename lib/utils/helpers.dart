@@ -2,7 +2,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -221,7 +221,7 @@ Future<void> showNotification({
       AndroidNotificationDetails(
     'FrappeChannelId',
     'FrappeChannelName',
-    'FrappeChannelDescription',
+    channelDescription: 'FrappeChannelDescription',
     // importance: Importance.max,
     // priority: Priority.high,
     ticker: 'ticker',
@@ -309,10 +309,12 @@ initLocalNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('app_icon');
 
-  final IOSInitializationSettings initializationSettingsIOS =
-      IOSInitializationSettings();
+  // final IOSInitializationSettings initializationSettingsIOS =
+  //     IOSInitializationSettings();
+      final DarwinInitializationSettings initializationSettingsDarwin =
+    DarwinInitializationSettings();
   final InitializationSettings initializationSettings = InitializationSettings(
-    iOS: initializationSettingsIOS,
+    iOS: initializationSettingsDarwin,
     android: initializationSettingsAndroid,
   );
   await flutterLocalNotificationsPlugin.initialize(

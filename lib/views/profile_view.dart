@@ -14,7 +14,7 @@ import 'package:frappe_app/widgets/frappe_bottom_sheet.dart';
 import 'package:frappe_app/widgets/frappe_button.dart';
 import 'package:frappe_app/widgets/padded_card_list_tile.dart';
 import 'package:frappe_app/widgets/user_avatar.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'form_view/form_view.dart';
@@ -92,7 +92,7 @@ class ProfileView extends StatelessWidget {
                       ProfileListTile(
                         title: "My Settings",
                         onTap: () {
-                          pushNewScreen(
+                          PersistentNavBarNavigator.pushNewScreen(
                             context,
                             screen: FormView(
                               name: Config().userId!,

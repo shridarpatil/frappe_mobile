@@ -9,7 +9,7 @@ class FormBuilderChipsInput<T> extends FormBuilderField<List<T>> {
   //TODO: Add documentation
   final ChipsInputSuggestions<T> findSuggestions;
 
-  // final ValueChanged<List<T>> onChanged;
+  final ValueChanged<List<T>> onChanged;
   final ChipsBuilder<T> chipBuilder;
   final ChipsBuilder<T> suggestionBuilder;
   final int maxChips;
@@ -32,10 +32,11 @@ class FormBuilderChipsInput<T> extends FormBuilderField<List<T>> {
     Key key,
     //From Super
     @required String name,
+    this.onChanged,
     FormFieldValidator<List<T>> validator,
     List<T> initialValue = const [],
     InputDecoration decoration = const InputDecoration(),
-    ValueChanged<List<T>> onChanged,
+    // ValueChanged<List<T>> onChanged,
     ValueTransformer<List<T>> valueTransformer,
     bool enabled = true,
     FormFieldSetter<List<T>> onSaved,
@@ -73,6 +74,8 @@ class FormBuilderChipsInput<T> extends FormBuilderField<List<T>> {
           focusNode: focusNode,
           builder: (FormFieldState<List<T>> field) {
             final state = field as _FormBuilderChipsInputState<T>;
+
+            // return Container();
 
             return ChipsInput<T>(
               initialValue: field.value,

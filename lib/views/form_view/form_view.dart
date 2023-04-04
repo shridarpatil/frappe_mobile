@@ -20,6 +20,7 @@ import 'package:frappe_app/views/form_view/form_view_viewmodel.dart';
 import 'package:frappe_app/widgets/collapsed_avatars.dart';
 import 'package:frappe_app/widgets/collapsed_reviews.dart';
 import 'package:frappe_app/widgets/custom_expansion_tile.dart';
+import 'package:frappe_app/widgets/generics/flat_button_wrapper.dart';
 import 'package:frappe_app/widgets/header_app_bar.dart';
 import 'package:frappe_app/widgets/timeline.dart';
 
@@ -528,17 +529,17 @@ class DocInfoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      child: FlatButton(
-        onPressed: onTap,
-        shape: showBorder
-            ? Border(
-                bottom: BorderSide(
-                  color: FrappePalette.grey[200]!,
-                  width: 2,
-                ),
-              )
-            : null,
-        padding: EdgeInsets.symmetric(vertical: 14),
+      child: FlatButtonWrapper(
+        onPressed: onTap != null ? onTap! : null,
+        // shape: showBorder
+        //     ? Border(
+        //         bottom: BorderSide(
+        //           color: FrappePalette.grey[200]!,
+        //           width: 2,
+        //         ),
+        //       )
+        //     : null,
+        // padding: EdgeInsets.symmetric(vertical: 14),
         child: Row(
           children: [
             Text(

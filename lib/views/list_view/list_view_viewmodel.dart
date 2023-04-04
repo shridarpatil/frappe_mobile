@@ -7,7 +7,7 @@ import 'package:frappe_app/model/desk_sidebar_items_response.dart';
 import 'package:frappe_app/model/desktop_page_response.dart';
 import 'package:frappe_app/views/form_view/form_view.dart';
 import 'package:injectable/injectable.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import '../../app/locator.dart';
 
@@ -253,7 +253,7 @@ class ListViewViewModel extends BaseViewModel {
     required BuildContext context,
   }) {
     {
-      pushNewScreen(
+      PersistentNavBarNavigator.pushNewScreen(
         context,
         screen: FormView(
           name: name,
@@ -341,7 +341,7 @@ class ListViewViewModel extends BaseViewModel {
     var _meta = await OfflineStorage.getMeta(doctype);
 
     if (_meta.docs[0].issingle == 1) {
-      pushNewScreen(
+      PersistentNavBarNavigator.pushNewScreen(
         context,
         screen: FormView(
           meta: _meta.docs[0],

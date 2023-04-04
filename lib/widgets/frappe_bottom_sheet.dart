@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frappe_app/config/frappe_palette.dart';
 
+import 'generics/flat_button_wrapper.dart';
+
 class FrappeBottomSheet extends StatelessWidget {
   final Widget? body;
 
@@ -41,7 +43,7 @@ class FrappeBottomSheet extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             showLeading
-                ? FlatButton(
+                ? FlatButtonWrapper(
                     child: Text(
                       leadingText ?? 'Cancel',
                       style: TextStyle(
@@ -50,15 +52,15 @@ class FrappeBottomSheet extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    padding: EdgeInsets.zero,
-                    minWidth: 70,
+                    // padding: EdgeInsets.zero,
+                    // minWidth: 70,
                     onPressed: leadingOnPressed ??
                         () {
                           Navigator.of(context).pop();
                         },
                   )
-                : FlatButton(
-                    padding: EdgeInsets.zero,
+                : FlatButtonWrapper(
+                    // padding: EdgeInsets.zero,
                     child: Container(),
                     onPressed: null,
                   ),

@@ -10,7 +10,7 @@ import 'package:frappe_app/model/config.dart';
 import 'package:frappe_app/utils/dio_helper.dart';
 import 'package:frappe_app/views/login/login_view.dart';
 import 'package:html/parser.dart';
-import 'package:html_editor_enhanced/html_editor.dart';
+// import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:frappe_app/utils/enums.dart' as enums;
 import 'frappe_button.dart';
 
@@ -144,7 +144,7 @@ class EditText extends StatefulWidget {
 }
 
 class _EditTextState extends State<EditText> {
-  final HtmlEditorController controller = HtmlEditorController();
+  // final HtmlEditorController controller = HtmlEditorController();
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +171,8 @@ class _EditTextState extends State<EditText> {
             ),
             child: FrappeFlatButton(
               onPressed: () async {
-                var txt = await controller.getText();
-                Navigator.of(context).pop(txt);
+                // var txt = await controller.getText();
+                // Navigator.of(context).pop(txt);
               },
               buttonType: enums.ButtonType.primary,
               title: "Update",
@@ -184,46 +184,46 @@ class _EditTextState extends State<EditText> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            HtmlEditor(
-              controller: controller,
-              htmlEditorOptions: HtmlEditorOptions(
-                shouldEnsureVisible: true,
-                hint: '',
-                initialText: html,
-              ),
-              htmlToolbarOptions: HtmlToolbarOptions(
-                toolbarType: ToolbarType.nativeGrid,
-                defaultToolbarButtons: [
-                  StyleButtons(),
-                  FontButtons(
-                    strikethrough: false,
-                    subscript: false,
-                    superscript: false,
-                  ),
-                  ColorButtons(),
-                  ListButtons(
-                    listStyles: false,
-                  ),
-                  ParagraphButtons(
-                    alignCenter: false,
-                    alignJustify: false,
-                    alignLeft: false,
-                    alignRight: false,
-                    textDirection: false,
-                    caseConverter: false,
-                    lineHeight: false,
-                  ),
-                  InsertButtons(
-                    audio: false,
-                    video: false,
-                    hr: false,
-                  ),
-                ],
-              ),
-              otherOptions: OtherOptions(
-                height: MediaQuery.of(context).size.height,
-              ),
-            ),
+            // HtmlEditor(
+            //   controller: controller,
+            //   htmlEditorOptions: HtmlEditorOptions(
+            //     shouldEnsureVisible: true,
+            //     hint: '',
+            //     initialText: html,
+            //   ),
+            //   htmlToolbarOptions: HtmlToolbarOptions(
+            //     toolbarType: ToolbarType.nativeGrid,
+            //     defaultToolbarButtons: [
+            //       StyleButtons(),
+            //       FontButtons(
+            //         strikethrough: false,
+            //         subscript: false,
+            //         superscript: false,
+            //       ),
+            //       ColorButtons(),
+            //       ListButtons(
+            //         listStyles: false,
+            //       ),
+            //       ParagraphButtons(
+            //         alignCenter: false,
+            //         alignJustify: false,
+            //         alignLeft: false,
+            //         alignRight: false,
+            //         textDirection: false,
+            //         caseConverter: false,
+            //         lineHeight: false,
+            //       ),
+            //       InsertButtons(
+            //         audio: false,
+            //         video: false,
+            //         hr: false,
+            //       ),
+            //     ],
+            //   ),
+            //   otherOptions: OtherOptions(
+            //     height: MediaQuery.of(context).size.height,
+            //   ),
+            // ),
           ],
         ),
       ),
